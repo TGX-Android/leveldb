@@ -1,6 +1,6 @@
 # LevelDB Preferences
 
-Java wrapper for [Google's LevelDB](https://github.com/google/leveldb) that implements SharedPreferences interface. Additionally, it supports iteration by prefix, array storage and lookup by value.
+Java wrapper for [Google's LevelDB](https://github.com/google/leveldb) that implements [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences) interface. Additionally, it supports iteration by prefix, array storage and lookup by value.
 
 For API documentation refer to javadoc inside [LevelDB.java](src/main/java/me/vkryl/leveldb/LevelDB.java).
 
