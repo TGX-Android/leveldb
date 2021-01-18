@@ -1,0 +1,6 @@
+[submodule "jni/leveldb"]
+	path = jni/leveldb
+	url = https://github.com/google/leveldb
+[submodule "jni/jni-utils"]
+	path = jni/jni-utils
+	url = https://github.com/TGX-Android/jni-utils
