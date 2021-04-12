@@ -67,7 +67,7 @@ inline leveldb::WriteBatch *get_batch (jlong ptr) {
 
 void onFatalError (JNIEnv *env, jobject database, const std::string &error) {
   jclass cls = env->GetObjectClass(database);
-  jmethodID mid = env->GetMethodID(cls, "onFatalError", "(Ljava/lang/String;I)V");
+  jmethodID mid = env->GetMethodID(cls, "onFatalError", "(Ljava/lang/String;)V");
   if (mid != nullptr) {
     jstring jError = jni::to_jstring(env, error);
     env->CallVoidMethod(database, mid, jError);
