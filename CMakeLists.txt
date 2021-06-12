@@ -18,6 +18,7 @@
 #
 
 cmake_minimum_required(VERSION 3.9)
+project(leveldbprefs VERSION 1.0 LANGUAGES C CXX)
 
 # Build leveldb
 
@@ -27,6 +28,7 @@ set(LEVELDB_BUILD_DIR "${PROJECT_SOURCE_DIR}/jni/leveldb/out/${ANDROID_ABI}")
 file(MAKE_DIRECTORY ${LEVELDB_BUILD_DIR})
 
 set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "Build LevelDB's benchmarks" FORCE)
+set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "Build LevelDB's unit tests" FORCE)
 add_subdirectory(
   ${LEVELDB_SRC_DIR}
   ${LEVELDB_BUILD_DIR}
