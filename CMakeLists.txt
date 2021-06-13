@@ -19,6 +19,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 project(leveldbprefs VERSION 1.0 LANGUAGES C CXX)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 # Build leveldb
 
