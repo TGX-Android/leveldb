@@ -21,9 +21,6 @@ cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
 project(leveldbjni VERSION 1.0.0 LANGUAGES C CXX)
 
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-
 # Build leveldb
 
 set(LEVELDB_SRC_DIR "jni/leveldb")
@@ -66,9 +63,4 @@ target_link_libraries(leveldbjni
   jni-utils
   android
   log
-)
-
-add_custom_command(TARGET leveldbjni POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E rename $<TARGET_FILE:leveldbjni> $<TARGET_FILE:leveldbjni>.debug
-  COMMAND ${CMAKE_STRIP} --strip-debug --strip-unneeded --remove-section=.comment $<TARGET_FILE:leveldbjni>.debug -o $<TARGET_FILE:leveldbjni>
 )
