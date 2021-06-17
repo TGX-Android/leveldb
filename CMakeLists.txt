@@ -17,8 +17,11 @@
 # File created on 18/01/2021
 #
 
-cmake_minimum_required(VERSION 3.9)
-project(leveldbprefs VERSION 1.0 LANGUAGES C CXX)
+cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+cmake_policy(SET CMP0048 NEW)
+project(leveldbjni VERSION 1.0.0 LANGUAGES C CXX)
+
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 # Build leveldb
@@ -36,9 +39,8 @@ add_subdirectory(
 )
 add_library(leveldb-lib STATIC IMPORTED)
 
-set_target_properties( leveldb-lib
-  PROPERTIES IMPORTED_LOCATION
-  ${LEVELDB_BUILD_DIR}/libleveldb.a
+set_target_properties( leveldb-lib PROPERTIES
+  IMPORTED_LOCATION ${LEVELDB_BUILD_DIR}/libleveldb.a
 )
 
 # Build jni-utils
@@ -64,4 +66,9 @@ target_link_libraries(leveldbjni
   jni-utils
   android
   log
+)
+
+add_custom_command(TARGET leveldbjni POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E rename $<TARGET_FILE:leveldbjni> $<TARGET_FILE:leveldbjni>.debug
+  COMMAND ${CMAKE_STRIP} --strip-debug --strip-unneeded --remove-section=.comment $<TARGET_FILE:leveldbjni>.debug -o $<TARGET_FILE:leveldbjni>
 )
