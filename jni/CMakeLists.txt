@@ -23,8 +23,8 @@ project(leveldbjni VERSION 1.0.0 LANGUAGES C CXX)
 
 # Build leveldb
 
-set(LEVELDB_SRC_DIR "jni/leveldb")
-set(LEVELDB_BUILD_DIR "${PROJECT_SOURCE_DIR}/jni/leveldb/out/${ANDROID_ABI}")
+set(LEVELDB_SRC_DIR "leveldb")
+set(LEVELDB_BUILD_DIR "${PROJECT_SOURCE_DIR}/leveldb/out/${ANDROID_ABI}")
 
 file(MAKE_DIRECTORY ${LEVELDB_BUILD_DIR})
 
@@ -43,19 +43,19 @@ set_target_properties( leveldb-lib PROPERTIES
 # Build jni-utils
 
 add_subdirectory(
-  jni/jni-utils
+  jni-utils
 )
 
 # Build shared library
 
 add_library(leveldbjni SHARED
-  jni/db_jni.cpp
+  db_jni.cpp
 )
 
 include_directories(
   ${LEVELDB_SRC_DIR}/include
   ${LEVELDB_BUILD_DIR}/include
-  jni/jni-utils/include
+  jni-utils/include
 )
 
 target_link_libraries(leveldbjni
