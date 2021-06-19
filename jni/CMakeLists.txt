@@ -35,10 +35,15 @@ add_subdirectory(
   ${LEVELDB_BUILD_DIR}
 )
 add_library(leveldb-lib STATIC IMPORTED)
-
-set_target_properties( leveldb-lib PROPERTIES
-  IMPORTED_LOCATION ${LEVELDB_BUILD_DIR}/libleveldb.a
+set_target_properties( leveldb-lib PROPERTIES IMPORTED_LOCATION
+  ${LEVELDB_BUILD_DIR}/libleveldb.a
 )
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
+  target_include_directories(leveldb-lib INTERFACE
+    ${LEVELDB_BUILD_DIR}/include
+    ${LEVELDB_SRC_DIR}/include
+  )
+endif()
 
 # Build jni-utils
 
@@ -51,12 +56,12 @@ add_subdirectory(
 add_library(leveldbjni SHARED
   db_jni.cpp
 )
-
-include_directories(
-  ${LEVELDB_SRC_DIR}/include
-  ${LEVELDB_BUILD_DIR}/include
-  jni-utils/include
-)
+if(${CMAKE_VERSION} VERSION_LESS "3.11.0")
+  target_include_directories(leveldbjni PRIVATE
+    ${LEVELDB_SRC_DIR}/include
+    ${LEVELDB_BUILD_DIR}/include
+  )
+endif()
 
 target_link_libraries(leveldbjni
   leveldb-lib
