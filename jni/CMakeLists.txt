@@ -21,6 +21,10 @@ cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
 project(leveldbjni VERSION 1.0.0 LANGUAGES C CXX)
 
+# Common flags
+
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections,--icf=safe -Wl,--build-id=none")
+
 # Build leveldb
 
 set(LEVELDB_SRC_DIR "leveldb")
