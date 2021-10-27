@@ -235,6 +235,21 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     return NativeBridge.dbGetProperty(ptr(), propertyName);
   }
 
+  public long getValueSize (String key) {
+    if (isClosed)
+      throw new IllegalStateException();
+    try {
+      return NativeBridge.dbGetValueSize(ptr(), key, false);
+    } catch (Throwable error) {
+      if (repair(error)) {
+        return getValueSize(key);
+      } else {
+        onFatalError(error);
+        throw error instanceof RuntimeException ? (RuntimeException) error : new RuntimeException(error);
+      }
+    }
+  }
+
   // Entry search utils
 
   public byte[][] findAll (@NonNull String keyPrefix) {
@@ -510,6 +525,25 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }*/
   }
 
+  public long getIntOrLong (@NonNull String key, int defValue) {
+    if (isClosed)
+      throw new IllegalStateException();
+    try {
+      return NativeBridge.dbGetIntOrLong(ptr(), key, defValue, false);
+    } catch (FileNotFoundException e) {
+      return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
+    } catch (Throwable error) {
+      if (repair(error)) {
+        return getIntOrLong(key, defValue);
+      } else {
+        onFatalError(error);
+        throw error;
+      }
+    }
+  }
+
   @Override
   public int getInt (@NonNull String key, int defValue) {
     if (isClosed)
@@ -518,6 +552,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetInt(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getInt(key, defValue);
@@ -528,12 +564,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public int tryGetInt (@NonNull String key) throws FileNotFoundException {
+  public int tryGetInt (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetInt(ptr(), key, 0, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -550,6 +586,9 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetIntArray(ptr(), key);
+    } catch (IllegalStateException e) {
+      Log.e(LOG_TAG, "Unexpected value format", e);
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getIntArray(key);
@@ -568,6 +607,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetLong(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getLong(key, defValue);
@@ -578,12 +619,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public long tryGetLong (@NonNull String key) throws FileNotFoundException {
+  public long tryGetLong (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetLong(ptr(), key, 0, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -618,6 +659,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetBoolean(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getBoolean(key, defValue);
@@ -627,12 +670,14 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public boolean tryGetBoolean (@NonNull String key) throws FileNotFoundException {
+  public boolean tryGetBoolean (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetBoolean(ptr(), key, false, true);
     } catch (FileNotFoundException e) {
+      throw e;
+    } catch (IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -665,6 +710,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetFloat(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getFloat(key, defValue);
@@ -674,12 +721,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public float tryGetFloat (@NonNull String key) throws FileNotFoundException {
+  public float tryGetFloat (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetFloat(ptr(), key, 0, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -711,6 +758,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetDouble(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getDouble(key, defValue);
@@ -720,12 +769,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public double tryGetDouble (@NonNull String key) throws FileNotFoundException {
+  public double tryGetDouble (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetDouble(ptr(), key, 0, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -757,6 +806,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetByte(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getByte(key, defValue);
@@ -766,12 +817,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
   }
 
-  public byte tryGetByte (@NonNull String key) throws FileNotFoundException {
+  public byte tryGetByte (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetByte(ptr(), key, (byte) 0, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {
@@ -790,6 +841,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       return NativeBridge.dbGetString(ptr(), key, defValue, false);
     } catch (FileNotFoundException e) {
       return defValue;
+    } catch (IllegalStateException e) {
+      throw e;
     } catch (Throwable error) {
       if (repair(error)) {
         return getString(key, defValue);
@@ -800,12 +853,12 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
   }
 
   @NonNull
-  public String tryGetString (@NonNull String key) throws FileNotFoundException {
+  public String tryGetString (@NonNull String key) throws FileNotFoundException, IllegalStateException {
     if (isClosed)
       throw new IllegalStateException();
     try {
       return NativeBridge.dbGetString(ptr(), key, null, true);
-    } catch (FileNotFoundException e) {
+    } catch (FileNotFoundException | IllegalStateException e) {
       throw e;
     } catch (Throwable error) {
       if (repair(error)) {

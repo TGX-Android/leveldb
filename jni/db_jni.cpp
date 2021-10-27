@@ -583,6 +583,47 @@ jstring dbParse<jstring> (JNIEnv *env, const std::string &key, const std::string
   }
 }
 
+DB_FUNC(jlong, dbGetValueSize, jlong ptr, jstring jKey, jboolean throwIfError) {
+  std::string key = jni::from_jstring(env, jKey);
+  leveldb::DB *db = get_database(ptr);
+  std::string value;
+  leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &value);
+  if (!s.ok()) {
+    if (!s.IsNotFound()) {
+      ON_RECOVERABLE_ERROR(s.ToString() + ", key:" + key);
+    }
+    if (throwIfError == JNI_TRUE) {
+      jni::throw_new(env, s.ToString(), KEY_NOT_FOUND_EXCEPTION);
+    }
+    return -1;
+  }
+  return value.size();
+}
+
+DB_FUNC(jlong, dbGetIntOrLong, jlong ptr, jstring jKey, jint defaultValue, jboolean throwIfError) {
+  std::string key = jni::from_jstring(env, jKey);
+  leveldb::DB *db = get_database(ptr);
+  std::string value;
+  leveldb::Status s = db->Get(leveldb::ReadOptions(), key, &value);
+  if (!s.ok()) {
+    if (!s.IsNotFound()) {
+      ON_RECOVERABLE_ERROR(s.ToString() + ", key:" + key);
+    }
+    if (throwIfError == JNI_TRUE) {
+      jni::throw_new(env, s.ToString(), KEY_NOT_FOUND_EXCEPTION);
+    }
+    return defaultValue;
+  }
+  size_t size = value.size();
+  if (size == sizeof(jint)) {
+    return (jlong) dbParse<jint>(env, key, value, defaultValue, throwIfError);
+  } else if (size == sizeof(jlong)) {
+    return dbParse<jlong>(env, key, value, (jlong) defaultValue, throwIfError);
+  }
+  ON_VALUE_ERROR(NEQ_MESSAGE(size, sizeof(jlong)), key);
+  return defaultValue;
+}
+
 template <typename T>
 T dbGet (JNIEnv *env, jlong ptr, jstring jKey, T defaultValue, jboolean throwIfError) {
   std::string key = jni::from_jstring(env, jKey);

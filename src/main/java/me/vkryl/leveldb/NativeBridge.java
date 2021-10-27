@@ -31,6 +31,8 @@ class NativeBridge { // db_jni.cpp
   public native static long dbGetSizeByPrefix (long ptr, String keyPrefix);
   public native static String dbGetProperty (long ptr, String propertyName);
 
+  public native static long dbGetValueSize (long ptr, String key, boolean throwIfError) throws AssertionError, FileNotFoundException;
+
   public native static byte[][] dbFindAll (long ptr, String keyPrefix);
   public native static String dbFindByValue (long ptr, String keyPrefix, byte[] value);
   public native static long dbFind (long ptr, String keyPrefix, long iteratorPtr);
@@ -52,6 +54,7 @@ class NativeBridge { // db_jni.cpp
   public native static int dbRemoveByAnyPrefix (long ptr, long batchPtr, String[] keyPrefix) throws AssertionError;
 
   public native static boolean dbContains (long ptr, String key);
+  public native static int dbGetIntOrLong (long ptr, String key, int defaultValue, boolean throwIfError) throws AssertionError, FileNotFoundException;
   public native static int dbGetInt (long ptr, String key, int defaultValue, boolean throwIfError) throws AssertionError, FileNotFoundException;
   public native static long dbGetLong (long ptr, String key, long defaultValue, boolean throwIfError) throws AssertionError, FileNotFoundException;
   public native static boolean dbGetBoolean (long ptr, String key, boolean defaultValue, boolean throwIfError) throws AssertionError, FileNotFoundException;
