@@ -1,3 +1,4 @@
+
 /*
  * This file is a part of LevelDB Preferences
  * Copyright © Vyacheslav Krylov (slavone@protonmail.ch) 2014-2021
@@ -47,7 +48,7 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
   private static final String LOG_TAG = "LevelDB";
 
   public interface ErrorHandler {
-    void onFatalError (LevelDB levelDB, Throwable error);
+    boolean onFatalError (LevelDB levelDB, Throwable error);
     void onError (LevelDB levelDB, String message, @Nullable Throwable error);
   }
 
@@ -87,8 +88,8 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
   }
 
   private void onFatalError (Throwable error) {
-    if (errorHandler != null) {
-      errorHandler.onFatalError(this, error);
+    if (errorHandler != null && errorHandler.onFatalError(this, error)) {
+      return;
     }
     throw error instanceof RuntimeException ? (RuntimeException) error : new RuntimeException(error);
   }
