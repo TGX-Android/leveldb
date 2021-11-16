@@ -67,8 +67,9 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
 
   private ErrorHandler errorHandler;
 
-  public LevelDB (String path, boolean isThreadSafe) {
+  public LevelDB (String path, boolean isThreadSafe, @Nullable ErrorHandler errorHandler) {
     this.path = path;
+    this.errorHandler = errorHandler;
     openDatabase();
     batchPtr = NativeBridge.dbBatchCreate();
     if (batchPtr == 0)
