@@ -919,7 +919,7 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
       try {
         semaphore.acquire();
       } catch (InterruptedException t) {
-        throw new IllegalStateException();
+        throw new RuntimeException(t);
       }
     }
     synchronized (editLock) {
