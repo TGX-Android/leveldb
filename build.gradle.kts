@@ -26,3 +26,7 @@ plugins {
 dependencies {
     implementation("androidx.annotation:annotation:${LibraryVersions.ANNOTATIONS}")
 }
+
+android {
+  namespace = "me.vkryl.leveldb"
+}
