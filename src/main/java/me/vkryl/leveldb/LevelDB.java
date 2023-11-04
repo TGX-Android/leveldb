@@ -436,6 +436,15 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     }
 
     /**
+     * @return IntArray representation of current entry
+     */
+    public int[] asIntArray () {
+      if (ptr == 0)
+        throw new IllegalStateException();
+      return NativeBridge.dbAsIntArray(ptr);
+    }
+
+    /**
      * @return LongArray representation of current entry
      */
     public long[] asLongArray () {

@@ -392,6 +392,7 @@ DB_FUNC(TYPE##Array, NAME, jlong iteratorPtr) { \
 }
 
 DB_FUNC_CAST_ARRAY(jbyte, dbAsByteArray, Byte)
+DB_FUNC_CAST_ARRAY(jint, dbAsIntArray, Int)
 DB_FUNC_CAST_ARRAY(jlong, dbAsLongArray, Long)
 
 DB_FUNC(jstring, dbAsString, jlong iteratorPtr) {

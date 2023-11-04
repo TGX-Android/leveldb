@@ -45,6 +45,7 @@ class NativeBridge { // db_jni.cpp
   public native static float dbAsFloat (long iteratorPtr);
   public native static double dbAsDouble (long iteratorPtr);
   public native static byte[] dbAsByteArray (long iteratorPtr);
+  public native static int[] dbAsIntArray (long iteratorPtr);
   public native static long[] dbAsLongArray (long iteratorPtr);
   public native static String dbAsString (long iteratorPtr);
 
