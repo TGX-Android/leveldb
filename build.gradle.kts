@@ -17,6 +17,8 @@
  * File created on 18/01/2021
  */
 
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     id("com.android.library")
     id("module-plugin")
@@ -29,4 +31,8 @@ dependencies {
 
 android {
   namespace = "me.vkryl.leveldb"
+
+  buildFeatures {
+    buildConfig = true
+  }
 }
