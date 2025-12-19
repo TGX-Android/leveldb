@@ -17,16 +17,15 @@
  * File created on 18/01/2021
  */
 
-@file:Suppress("UnstableApiUsage")
-
 plugins {
-    id("com.android.library")
-    id("module-plugin")
-    id("cmake-plugin")
+  id(libs.plugins.android.library.get().pluginId)
+  alias(libs.plugins.kotlin.android)
+  id("tgx-module")
+  id("cmake-plugin")
 }
 
 dependencies {
-    implementation("androidx.annotation:annotation:${LibraryVersions.ANNOTATIONS}")
+    implementation(libs.androidx.annotation)
 }
 
 android {
