@@ -10,6 +10,10 @@ dependencies {
 android {
   namespace = "me.vkryl.leveldb"
 
+  defaultConfig {
+    consumerProguardFiles("consumer-rules.pro")
+  }
+
   externalNativeBuild {
     cmake {
       path("jni/CMakeLists.txt")
