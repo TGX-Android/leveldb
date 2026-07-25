@@ -5,7 +5,7 @@ message("${CMAKE_PROJECT_NAME} platform: ${ANDROID_PLATFORM} flavor: ${TGX_FLAVO
 
 # Common flags
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections,--icf=safe -Wl,--build-id=none")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections,--icf=safe -Wl,--build-id=none -Wl,--exclude-libs,ALL -flto")
 
 # Build leveldb
 
@@ -54,6 +54,16 @@ target_link_libraries(leveldbjni
   jni-utils
   android
   log
+)
+
+target_compile_options(leveldbjni PRIVATE
+  -Os
+  -fno-rtti
+  -fno-exceptions
+  -ffunction-sections
+  -fdata-sections
+  -fvisibility=hidden
+  -flto
 )
 
 if (${ANDROID_ABI} STREQUAL "arm64-v8a" OR ${ANDROID_ABI} STREQUAL "x86_64")
