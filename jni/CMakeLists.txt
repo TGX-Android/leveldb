@@ -5,7 +5,13 @@ message("${CMAKE_PROJECT_NAME} platform: ${ANDROID_PLATFORM} flavor: ${TGX_FLAVO
 
 # Common flags
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections,--icf=safe -Wl,--build-id=none -Wl,--exclude-libs,ALL -flto")
+add_compile_options(
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-ffunction-sections>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fdata-sections>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fvisibility=hidden>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fvisibility-inlines-hidden>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-flto=full>"
+)
 
 # Build leveldb
 
@@ -56,14 +62,10 @@ target_link_libraries(leveldbjni
   log
 )
 
-target_compile_options(leveldbjni PRIVATE
-  -Os
-  -fno-rtti
-  -fno-exceptions
-  -ffunction-sections
-  -fdata-sections
-  -fvisibility=hidden
-  -flto
+target_link_options(leveldbjni PRIVATE
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wl,--gc-sections,--icf=safe>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wl,--exclude-libs,ALL>"
+  "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-flto=full>"
 )
 
 if (${ANDROID_ABI} STREQUAL "arm64-v8a" OR ${ANDROID_ABI} STREQUAL "x86_64")
