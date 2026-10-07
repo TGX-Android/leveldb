@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.22.1 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
 project(leveldbjni VERSION 1.0.0 LANGUAGES C CXX)
 message("${CMAKE_PROJECT_NAME} platform: ${ANDROID_PLATFORM} flavor: ${TGX_FLAVOR}")
@@ -12,6 +12,10 @@ add_compile_options(
   "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fvisibility-inlines-hidden>"
   "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-flto=full>"
 )
+
+if (CMAKE_SYSTEM_VERSION GREATER_EQUAL 23)
+  string(APPEND CMAKE_SHARED_LINKER_FLAGS " -Wl,--pack-dyn-relocs=android")
+endif()
 
 # Build leveldb
 
