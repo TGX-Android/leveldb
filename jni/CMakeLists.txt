@@ -19,7 +19,17 @@ add_compile_options(
   "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fno-asynchronous-unwind-tables>"
 )
 
-if (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 23)
+if (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 30)
+  add_link_options(
+    "-Wl,--pack-dyn-relocs=android+relr"
+    "-Wl,--no-use-android-relr-tags"
+  )
+elseif (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 28)
+  add_link_options(
+    "-Wl,--pack-dyn-relocs=android+relr"
+    "-Wl,--use-android-relr-tags"
+  )
+elseif (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 23)
   add_link_options(
     "-Wl,--pack-dyn-relocs=android"
   )
