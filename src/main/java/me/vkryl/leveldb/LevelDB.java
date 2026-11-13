@@ -163,6 +163,7 @@ public final class LevelDB implements SharedPreferences, SharedPreferences.Edito
     if (message == null || message.isEmpty())
       return false;
     if (!message.contains("Corruption: not an sstable (bad magic number)") && // dbGet:501: Corruption: not an sstable (bad magic number)
+        !message.contains("Corruption: not an sstable (footer too short)") && // a table file cut before its footer, google/leveldb@068d5ee
         !message.contains(".ldb: No such file or directory")) // dbPut:637: NotFound: /data/user/0/org.thunderdog.challegram/files/pmc/db/002634.ldb: No such file or directory, value_size:4
       return false;
     if (repairAttempted.getAndSet(true))
