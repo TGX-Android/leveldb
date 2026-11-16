@@ -13,6 +13,11 @@ android {
 
   defaultConfig {
     consumerProguardFiles("consumer-rules.pro")
+    externalNativeBuild {
+      cmake {
+        targets += "leveldbjni"
+      }
+    }
   }
 
   externalNativeBuild {

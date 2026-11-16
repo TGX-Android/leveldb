@@ -19,6 +19,15 @@ add_compile_options(
   "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-fno-asynchronous-unwind-tables>"
 )
 
+file(REAL_PATH "${ANDROID_NDK}" ANDROID_NDK_REAL_PATH)
+
+add_compile_options(
+  "-ffile-prefix-map=${PROJECT_SOURCE_DIR}/="
+  "-ffile-prefix-map=${ANDROID_NDK}/=ndk/"
+  "-ffile-prefix-map=${ANDROID_NDK_REAL_PATH}/=ndk/"
+  "-ffile-prefix-map=${CMAKE_BINARY_DIR}=.cxx"
+)
+
 if (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 30)
   add_link_options(
     "-Wl,--pack-dyn-relocs=android+relr"
@@ -38,26 +47,16 @@ endif()
 # Build leveldb
 
 set(LEVELDB_SRC_DIR "leveldb")
-set(LEVELDB_BUILD_DIR "${PROJECT_SOURCE_DIR}/leveldb/out/${ANDROID_ABI}")
-
-file(MAKE_DIRECTORY ${LEVELDB_BUILD_DIR})
+set(LEVELDB_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/leveldb")
 
 set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "Build LevelDB's benchmarks" FORCE)
 set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "Build LevelDB's unit tests" FORCE)
+set(LEVELDB_INSTALL OFF CACHE BOOL "Install LevelDB's header and library" FORCE)
 add_subdirectory(
   ${LEVELDB_SRC_DIR}
   ${LEVELDB_BUILD_DIR}
+  EXCLUDE_FROM_ALL
 )
-add_library(leveldb-lib STATIC IMPORTED)
-set_target_properties( leveldb-lib PROPERTIES IMPORTED_LOCATION
-  ${LEVELDB_BUILD_DIR}/libleveldb.a
-)
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.11.0")
-  target_include_directories(leveldb-lib INTERFACE
-    ${LEVELDB_BUILD_DIR}/include
-    ${LEVELDB_SRC_DIR}/include
-  )
-endif()
 
 # Build jni-utils
 
@@ -70,15 +69,9 @@ add_subdirectory(
 add_library(leveldbjni SHARED
   db_jni.cpp
 )
-if(${CMAKE_VERSION} VERSION_LESS "3.11.0")
-  target_include_directories(leveldbjni PRIVATE
-    ${LEVELDB_SRC_DIR}/include
-    ${LEVELDB_BUILD_DIR}/include
-  )
-endif()
 
 target_link_libraries(leveldbjni
-  leveldb-lib
+  leveldb
   jni-utils
   android
   log
