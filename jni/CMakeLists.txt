@@ -28,6 +28,10 @@ add_compile_options(
   "-ffile-prefix-map=${CMAKE_BINARY_DIR}=.cxx"
 )
 
+if (${ANDROID_ABI} STREQUAL "arm64-v8a")
+  add_compile_options("-mbranch-protection=standard")
+endif()
+
 if (ANDROID_MIN_SDK_VERSION GREATER_EQUAL 30)
   add_link_options(
     "-Wl,--pack-dyn-relocs=android+relr"
