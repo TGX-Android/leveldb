@@ -28,7 +28,9 @@ add_compile_options(
   "-ffile-prefix-map=${CMAKE_BINARY_DIR}=.cxx"
 )
 
-if (${ANDROID_ABI} STREQUAL "arm64-v8a")
+option(TGX_BRANCH_PROTECTION "Build with PAC and BTI on arm64" ON)
+
+if (${ANDROID_ABI} STREQUAL "arm64-v8a" AND TGX_BRANCH_PROTECTION)
   add_compile_options("-mbranch-protection=standard")
 endif()
 
